@@ -40,37 +40,25 @@ class GestureRecognition:
         return gestures, img
 
     def get_gesture(self, hand_landmarks: NormalizedLandmarkList) -> Gesture:
-        if self.is_rotate_360(hand_landmarks):
-            return Gesture.ROTATE_360
+        gesture_checks = [
+            (self.is_rotate_360, Gesture.ROTATE_360),
+            (self.is_tilt_left, Gesture.TILT_LEFT),
+            (self.is_tilt_right, Gesture.TILT_RIGHT),
+            (self.is_attention, Gesture.ATTENTION),
+            (self.is_dance, Gesture.DANCE),
+            (self.is_listen_message, Gesture.LISTEN_MESSAGE),
+            (self.is_stop_hand, Gesture.STOP),
+            (self.is_pinch, Gesture.PINCH),
+            (self.is_fist, Gesture.FIST),
+            (self.is_fingers_forward, Gesture.FINGERS_FORWARD),
+        ]
 
-        if self.is_tilt_left(hand_landmarks):
-            return Gesture.TILT_LEFT
+        for check_func, gesture in gesture_checks:
+            if check_func(hand_landmarks):
+                return gesture
 
-        if self.is_tilt_right(hand_landmarks):
-            return Gesture.TILT_RIGHT
-
-        if self.is_attention(hand_landmarks):
-            return Gesture.ATTENTION
-        
-        if self.is_dance(hand_landmarks):
-            return Gesture.DANCE
-        
-        if self.is_listen_message(hand_landmarks):
-            return Gesture.LISTEN_MESSAGE
-
-        if self.is_stop_hand(hand_landmarks):
-            return Gesture.STOP
-
-        if self.is_pinch(hand_landmarks):
-            return Gesture.PINCH
-
-        if self.is_fist(hand_landmarks):
-            return Gesture.FIST
-
-        if self.is_fingers_forward(hand_landmarks):
-            return Gesture.FINGERS_FORWARD
-
-        return Gesture.STOP 
+        return Gesture.STOP
+ 
         
     def calculate_angle(self, point1: Tuple[int, int], point2: Tuple[int, int]) -> float:
         delta_x = point2[0] - point1[0]
